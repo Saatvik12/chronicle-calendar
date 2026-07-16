@@ -1,5 +1,5 @@
 import { ScrollText, Settings, Tag, LogOut, List, LayoutGrid, Bell, X } from 'lucide-react'
-import { format, isToday, isTomorrow, parseISO } from 'date-fns'
+import { format, isToday, isTomorrow } from 'date-fns'
 import { useAuth } from '../../context/AuthContext'
 
 export default function Sidebar({
@@ -139,27 +139,27 @@ function UpcomingList({ reminders, onOpenEvent }) {
 
   const groups = {}
   for (const r of reminders) {
-    const dayKey = r.trigger_at.slice(0, 10)
-    if (!groups[dayKey]) groups[dayKey] = []
-    groups[dayKey].push(r)
+    const localDate = new Date(r.trigger_at)
+    const dayKey = format(localDate, 'yyyy-MM-dd') // local date, not the raw UTC date
+    if (!groups[dayKey]) groups[dayKey] = { date: localDate, items: [] }
+    groups[dayKey].items.push(r)
   }
 
-  const dayLabel = (dayKey) => {
-    const d = parseISO(dayKey)
-    if (isToday(d)) return 'Today'
-    if (isTomorrow(d)) return 'Tomorrow'
-    return format(d, 'EEEE, MMM d')
+  const dayLabel = (date) => {
+    if (isToday(date)) return 'Today'
+    if (isTomorrow(date)) return 'Tomorrow'
+    return format(date, 'EEEE, MMM d')
   }
 
   return (
     <div className="space-y-4">
-      {Object.entries(groups).map(([dayKey, items]) => (
+      {Object.entries(groups).map(([dayKey, group]) => (
         <div key={dayKey}>
           <h4 className="text-xs uppercase tracking-wider text-ink-muted mb-1.5">
-            {dayLabel(dayKey)}
+            {dayLabel(group.date)}
           </h4>
           <ul className="space-y-1">
-            {items.map((r) => (
+            {group.items.map((r) => (
               <li key={r.id}>
                 <button
                   onClick={() => onOpenEvent(r.events?.id)}
