@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  transition-property: background-color, border-color, color;
+  transition-duration: 250ms;
+  transition-timing-function: ease;
+}
+
+html {
+  color-scheme: light;
+}
+html[data-theme='modern_dark'],
+html[data-theme='royal_amethyst'] {
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: rgb(var(--color-surface));
+  color: rgb(var(--color-ink));
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+@layer components {
+  .input {
+    @apply w-full rounded-card border border-border bg-surface px-3 py-2.5 text-sm text-ink placeholder:text-ink-muted/70 outline-none focus:border-accent focus:ring-1 focus:ring-accent;
+  }
+  .btn-primary {
+    @apply rounded-card bg-accent px-4 py-2.5 text-sm font-medium text-surface hover:opacity-90 active:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity;
+  }
+  .btn-secondary {
+    @apply rounded-card border border-border bg-surface-raised px-4 py-2.5 text-sm font-medium text-ink hover:border-ink-muted transition-colors;
+  }
+  .card {
+    @apply bg-surface-raised border border-border rounded-card;
+  }
+}
+
+::selection {
+  background-color: rgb(var(--color-accent) / 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Thin scrollbar that respects the theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--color-border));
+  border-radius: 999px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
